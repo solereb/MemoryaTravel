@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Подтверждение Email - Memorya Travel</title>
+    <style>
+        :root {
+            --bg-color: #BCE6E6;
+            --text-main: #7DAFB0;
+            --white: #FFFFFF;
+            --input-bg: #FDF2D8;
+            --btn-create: #8ABEC0;
+            --success: #2ECC71;
+            --success-light: #E8F8F5;
+            --error: #E74C3C;
+            --error-light: #FADBD8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .verification-container {
+            width: 100%;
+            max-width: 500px;
+            background-color: var(--white);
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            position: relative;
+        }
+
+        .verification-container::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 20px;
+            right: 20px;
+            height: 2px;
+            background-image: repeating-linear-gradient(to right, var(--text-main) 0, var(--text-main) 5px, transparent 5px, transparent 10px);
+        }
+
+        h1 {
+            color: var(--text-main);
+            font-size: 2rem;
+            margin-bottom: 30px;
+            margin-top: 10px;
+            font-weight: 600;
+        }
+
+        .status-icon {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            line-height: 1;
+        }
+
+        #verificationStatus {
+            font-size: 1.1rem;
+            margin-bottom: 25px;
+            padding: 15px;
+            border-radius: 8px;
+            width: 100%;
+            font-weight: 500;
+        }
+
+        .success-message-page {
+            color: var(--success);
+            border: 2px solid var(--success);
+            background-color: var(--success-light);
+        }
+
+        .error-message-page {
+            color: var(--error);
+            border: 2px solid var(--error);
+            background-color: var(--error-light);
+        }
+
+        .btn-home {
+            background-color: var(--btn-create);
+            color: white;
+            border: none;
+            padding: 12px 35px;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-home:hover {
+            background-color: #6C9DA0;
+        }
+        
+        .logo-text {
+            color: var(--text-main);
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-top: 30px;
+            border-top: 1px solid #eee;
+            padding-top: 15px;
+            width: 100%;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="verification-container">    
+    <h1>Подтверждение</h1>
+    <div class="status-icon" id="statusIcon">⚙️</div>
+            
+            <div id="verificationStatus">
+                Проверяем токен подтверждения...
+            </div>
+
+            <a href="login.html" class="btn-home">Перейти на страницу входа</a>
+            
+            <div class="logo-text">Memorya Travel</div>
+        </div>
+
+    <script>
+        const API_VERIFY_URL = `http://${window.location.hostname}:8000/auth/email/verify/`;
+
+        const statusContainer = document.getElementById('verificationStatus');
+        const statusIcon = document.getElementById('statusIcon');
+
+        const displayStatus = (message, isSuccess = true, icon = '✅') => {
+            statusContainer.textContent = message;
+            statusIcon.textContent = icon;
+            statusContainer.classList.remove('success-message-page', 'error-message-page');
+
+            if (isSuccess) {
+                statusContainer.classList.add('success-message-page');
+            } else {
+                statusContainer.classList.add('error-message-page');
+            }
+        };
+
+
+        const verifyToken = async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const token = urlParams.get('token');
+            
+            if (!token) {
+                displayStatus('❌ Ошибка: Ссылка подтверждения недействительна (отсутствует токен).', false, '❌');
+                return;
+            }
+            
+            displayStatus('Подтверждаем Ваш Email...', true, '⏳');
+            
+
+
+            try {
+                const urlWithToken = `${API_VERIFY_URL}${encodeURIComponent(token)}`;
+                const response = await fetch(urlWithToken, {
+                    method: 'GET',
+                    headers: {}
+                });
+
+                const result = await response.json();
+                
+                if (response.ok) {
+                    displayStatus('✅ Email успешно подтвержден! Вы можете войти.', true, '🎉');
+                    
+                } else {
+                    console.error('Ошибка подтверждения:', result);
+                    
+                    let errorMessage = result.message || 'Ошибка подтверждения. Пожалуйста, проверьте ссылку.';
+                    let icon = '💔';
+                    
+                    if (response.status === 400 || response.status === 404) {
+                        errorMessage = '❌ Ссылка устарела или токен недействителен.';
+                        icon = '🛑';
+                    } else if (response.status === 500) {
+                        errorMessage = 'Произошла ошибка на сервере. Попробуйте позже.';
+                        icon = '🔥';
+                    }
+                    
+                    displayStatus(errorMessage, false, icon);
+                }
+
+            } catch (error) {
+                console.error('Ошибка сети при проверке токена:', error);
+                displayStatus('Ошибка подключения к серверу. Попробуйте позже.', false, '⚠️');
+            }
+        };
+        window.addEventListener('load', verifyToken);
+
+    </script>
+</body>
+</html>

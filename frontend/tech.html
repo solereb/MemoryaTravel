@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Поддержка | Memorya Travel</title>
+    <style>
+        :root {
+            --sidebar-bg: #7DAFB0;
+            --sidebar-light: #A4D4D4;
+            --main-bg: #F8FBFB;
+            --accent-yellow: #FEDC97;
+            --text-teal: #5A8C8D;
+            --white: #FFFFFF;
+            --border: #E0E7E7;
+            --danger: #FF8A8A;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+        body { background-color: var(--main-bg); min-height: 100vh; display: flex; flex-direction: column; }
+
+        header {
+            background-color: var(--sidebar-bg); 
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .brand-name {
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .logo-box {
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: #ccc;
+        }
+        nav {
+            display: flex;
+            gap: 15px;
+        }
+        .header-nav {
+            color: var(--text-white);
+        }
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        nav a {
+            text-decoration: none;
+            color: var(--white);
+            padding: 8px 15px;
+            border-radius: 5px;
+            background-color: var(--sidebar-light);
+            font-size: 0.9rem;
+            transition: 0.3s;
+        }
+
+        nav a:hover, nav a.active {
+            background-color: #4e7475;
+        }
+
+        .profile-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+            cursor: pointer;
+        }
+
+        .profile-area img {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid white;
+            background-color: #eee;
+        }
+
+        .support-container {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+
+        .support-card {
+            background: white;
+            width: 100%;
+            max-width: 900px;
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(125, 175, 176, 0.15);
+        }
+
+        .support-info {
+            background: var(--sidebar-bg);
+            padding: 40px;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .support-info h1 { margin-bottom: 20px; font-size: 2rem; }
+        .support-info p { line-height: 1.6; opacity: 0.9; margin-bottom: 30px; }
+        .support-illustration { font-size: 80px; text-align: center; }
+
+        .support-form-area { padding: 40px; background: white; }
+        
+        .form-group { margin-bottom: 20px; }
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: var(--text-teal);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .s-input, .s-select, .s-textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            outline: none;
+            background: #F9FDFD;
+            transition: 0.3s;
+        }
+        .s-input:focus, .s-textarea:focus { border-color: var(--sidebar-bg); background: white; }
+        .s-input[readonly] { background: #eee; color: #888; cursor: not-allowed; }
+
+        .s-textarea { resize: none; }
+
+        .file-upload {
+            border: 2px dashed var(--border);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .file-upload:hover { border-color: var(--sidebar-bg); background: #f0fafa; }
+        #fileName { font-size: 0.8rem; color: var(--text-teal); margin-top: 5px; display: block; }
+
+        .btn-send {
+            background-color: #F4D03F;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            width: 100%;
+            transition: 0.3s;
+            box-shadow: 0 4px 10px rgba(125, 175, 176, 0.3);
+        }
+        .btn-send:hover { background-color: #f2ca28;; transform: translateY(-2px); }
+
+        .status-msg {
+            margin-top: 15px;
+            text-align: center;font-size: 0.9rem;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+        <div class="logo-area">
+            <img src="static/logo.png" class="logo-box"><span class="brand-name">Memorya Travel</span>
+        </div>
+                
+        <nav class="header-nav">
+            <a href="/map.html" >Моя Карта</a>
+            <a href="/travels.html">Мои путешествия</a>
+            <a href="/main.html">О проекте</a>
+        </nav>
+
+        <div class="profile-area">
+            <img id="userAvatar" src="" alt="Профиль">
+            <span><a href="/profile.html">Мой профиль</a></span>
+        </div>
+    </header>
+
+<main class="support-container">
+    <div class="support-card">
+        <div class="support-info">
+            <h1>Помощь рядом</h1>
+            <p>Нашли баг или есть идея, как сделать Memorya лучше? Напишите нам! Ответ придет на вашу почту, указанную в профиле, в течение 24 часов.</p>
+            <div class="support-illustration">📩</div>
+        </div>
+
+        <div class="support-form-area">
+            <form id="supportForm">
+                <div id="userEmail" style="display: none;"></div>
+                <div class="form-group">
+                    <label>Категория вопроса</label>
+                    <select id="category" class="s-select">
+                        <option value="bug">🐛 Сообщить об ошибке</option>
+                        <option value="feature">💡 Предложить идею</option>
+                        <option value="data">🗺️ Проблема с картой/регионом</option>
+                        <option value="other">❓ Другое</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Приоритет</label>
+                    <div style="display: flex; gap: 15px;">
+                        <label style="font-weight: normal; text-transform: none; display: flex; align-items: center; gap: 5px;">
+                            <input type="radio" name="priority" value="low" checked> Обычный
+                        </label>
+                        <label style="font-weight: normal; text-transform: none; display: flex; align-items: center; gap: 5px;">
+                            <input type="radio" name="priority" value="high"> Срочно!
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Что случилось?</label>
+                    <textarea id="message" class="s-textarea" rows="4" placeholder="Опишите проблему как можно подробнее..." required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Скриншот (если нужно)</label>
+                    <div class="file-upload" onclick="document.getElementById('fileInput').click()">
+                        <span>📷 Нажмите, чтобы выбрать файл</span>
+                        <input type="file" id="fileInput" hidden accept="image/*" onchange="showFileName(this)">
+                        <span id="fileName"></span>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-send">Отправить запрос</button>
+                <div id="status" class="status-msg"></div>
+            </form>
+        </div>
+    </div>
+</main>
+
+<script>
+    const API_BASE_URL = `http://${window.location.hostname}:8000`;
+    let CACHED_PROFILE = null;
+    function getCookie(name) {
+        const value = `; ${document.cookie};`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(';').shift();
+        return null;
+    }
+
+    function deleteAllCookies() {
+            const allCookies = document.cookie.split(';');
+            for (let i = 0; i < allCookies.length; i++) {
+                const cookie = allCookies[i];
+                const eqPos = cookie.indexOf('=');
+                const name = eqPos > -1 ? cookie.substring(0, eqPos) : cookie;
+                
+                document.cookie = name.trim() + '=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/';
+            }
+        }
+
+    async function Reset() {
+        const refresh = getCookie('rememberToken');
+        const response = await fetch(`${API_BASE_URL}/auth/refresh`, {
+            method: "POST",
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 'refresh_token': refresh }),
+            credentials: 'include'
+        });
+        if (response.ok) {
+            const data = await response.json();
+            deleteAllCookies();
+            document.cookie = `rememberToken=${data.refresh_token}; path=/; max-age=604800`;
+            return true;
+        }
+        deleteAllCookies();
+        window.location.href = '/login.html';
+        return false;
+    }
+    async function loadUserProfile() {
+        try {
+            const res = await fetch(`${API_BASE_URL}/users/profile`, { credentials: 'include' });
+            if (res.ok) {
+                const data = await res.json();
+                document.getElementById('userEmail').value = data.email;
+                const img = document.getElementById('userAvatar');
+                img.src = `${API_BASE_URL}/users/avatar?t=${Date.now()}`;
+            } else if (res.status === 401){
+                await Reset();
+                await loadUserProfile();
+            }
+        } catch (e) {
+            document.getElementById('userEmail').value = "offline@mode.com";
+        }
+    }
+
+    function showFileName(input) {
+        const name = input.files[0] ? input.files[0].name : "";
+        document.getElementById('fileName').textContent = name;
+    }
+
+    async function sendTicketData(payload) {
+        const response = await fetch(`${API_BASE_URL}/support/tickets`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+            credentials: 'include'
+        });
+
+        if (response.status === 401) {
+            await Reset();
+            sendTicketData(payload);
+        }
+        
+        return await response.json();
+    }
+
+    async function uploadTicketScreenshot(ticketId, file) {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        const response = await fetch(`${API_BASE_URL}/support/tickets/${ticketId}/screenshot`, {
+            method: 'POST',
+            body: formData,
+            credentials: 'include'
+        });
+        if (response.status === 401) {
+            await Reset();
+            uploadTicketScreenshot(ticketId, file);
+        }
+        return await response.json();
+    }
+    document.getElementById('supportForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = e.target.querySelector('button');
+        const status = document.getElementById('status');
+
+        const ticketData = {
+            category: document.getElementById('category').value,
+            priority: document.querySelector('input[name="priority"]:checked').value,
+            message: document.getElementById('message').value
+        };
+
+        const fileInput = document.getElementById('fileInput');
+        const file = fileInput.files[0];
+
+        btn.disabled = true;
+        btn.textContent = "Отправка данных...";
+
+        try {
+            const result = await sendTicketData(ticketData);
+            const ticketId = result.id;
+            if (file && ticketId) {
+                btn.textContent = "Загрузка скриншота...";
+                await uploadTicketScreenshot(ticketId, file);
+            }
+            status.style.display = 'block';
+            status.style.color = 'var(--sidebar-bg)';
+            status.textContent = "✅ Заявка №" + ticketId.slice(0,8) + " успешно создана!";
+            e.target.reset();
+            document.getElementById('fileName').textContent = "";
+
+        } catch (err) {
+            status.style.display = 'block';
+            status.style.color = 'var(--danger)';
+            status.textContent = "❌ " + err.message;
+        } finally {
+            btn.disabled = false;
+            btn.textContent = "Отправить запрос";
+        }
+    });
+
+    loadUserProfile();
+</script>
+
+</body>
+</html>

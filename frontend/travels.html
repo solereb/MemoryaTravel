@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мои путешествия | Memorya Travel</title>
+    <style>
+        :root {
+            --sidebar-bg: #7DAFB0;       
+            --sidebar-light: #A4D4D4;    
+            --main-bg: #FFFFFF;          
+            --accent-yellow: #FEDC97;    
+            --accent-cream: #FDF2D8;     
+            --text-white: #FFFFFF;
+            --text-teal: #5A8C8D;        
+            --gray-placeholder: #EAEAEA; 
+            --btn-color: #7DAFB0;
+            --white: #FFFFFF;
+            --gray: #888;
+            --border: #E0E7E7;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+        body { background-color: var(--main-bg); color: #333; }
+
+    
+        header {
+            background-color: var(--sidebar-bg); 
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .brand-name {
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .logo-box {
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: #ccc;
+        }
+        nav {
+            display: flex;
+            gap: 15px;
+        }
+        .header-nav {
+            color: var(--accent-yellow);
+        }
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        nav a {
+            text-decoration: none;
+            color: var(--text-white);
+            padding: 8px 15px;
+            border-radius: 5px;
+            background-color: var(--sidebar-light);
+            font-size: 0.9rem;
+            transition: 0.3s;
+        }
+
+        nav a:hover, nav a.active {
+            background-color: #4e7475;
+        }
+
+        .profile-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+            cursor: pointer;
+        }
+
+        .profile-area img {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid white;
+            background-color: #eee;
+        }
+        .filter-panel {
+            background: white;
+            padding: 25px 40px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
+            align-items: end;
+        }
+        .filter-group { display: flex; flex-direction: column; gap: 8px; }
+        .filter-group label { font-size: 0.75rem; font-weight: bold; color: var(--text-teal); text-transform: uppercase; }
+        
+        .f-input {
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            outline: none;
+            font-size: 0.9rem;
+        }
+        .f-input1{
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            outline: none;
+            font-size: 0.9rem;
+            
+            background-color: #F4D03F;
+        }
+        .f-input1::placeholder {
+            color: var(--white);
+            font-weight: bold;
+        }
+        .f-input:focus { border-color: var(--sidebar-bg); }
+        
+        .icon-filters {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #f5f5f5;
+            flex-wrap: wrap;
+        }
+        .icon-cube {
+            width: 45px;
+            height: 45px;
+            background: #fff;
+            border: 2px solid #eee;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            padding: 5px;
+        }
+        .icon-cube img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: grayscale(1);
+            opacity: 0.5;
+        }
+        .icon-cube.active {
+            border-color: var(--sidebar-bg);
+            background: #f0fafa;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(125, 175, 176, 0.2);
+        }
+        .icon-cube.active img {
+            filter: grayscale(0);
+            opacity: 1;
+        }
+
+        .container { padding: 40px; max-width: 1400px; margin: 0 auto; }
+        .travels-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .t-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+            transition: 0.3s;
+            cursor: pointer;
+            border: 1px solid #f0f0f0;
+        }
+        .t-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
+        
+        .t-image { height: 190px; width: 100%; object-fit: cover; background: #fafafa; }
+        
+        .t-info { padding: 20px; }
+        .t-date { font-size: 0.8rem; color: var(--gray); margin-bottom: 6px; }
+        .t-title { font-size: 1.2rem; font-weight: bold; margin-bottom: 8px; color: #333; }
+        .t-loc { color: var(--sidebar-bg); font-weight: 600; font-size: 0.9rem; margin-bottom: 15px; display: flex; align-items: center; gap: 4px; }
+        
+        .t-icons-row { display: flex; gap: 8px; }
+        .t-mini-icon {
+            width: 30px;
+            height: 30px;
+            background: #f9f9f9;
+            border-radius: 6px;
+            padding: 4px;
+            border: 1px solid #eee;
+        }
+        .view-card {
+            max-width: 800px;
+            padding: 0;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .view-modal-container {
+            max-width: 800px;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .view-bottom-layout {
+            display: flex;
+            padding: 20px;
+            gap: 20px;
+            height: 300px; 
+            align-items: stretch;
+        }
+
+        .view-meta-col {
+            flex: 0 0 40%; 
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .view-description-col {
+            flex: 1; 
+            min-width: 0; 
+        }
+
+        .description-fake-textarea {
+            width: 100%;
+            height: 100%;
+            background: #f9f9f9; 
+            border-radius: 8px;
+            padding: 15px;
+            border: 1px solid #eee;
+            
+            
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: #333;
+            
+            
+            overflow-y: auto; 
+            overflow-x: hidden; 
+            word-wrap: break-word; 
+            white-space: pre-wrap; 
+        }
+
+
+        .description-fake-textarea::-webkit-scrollbar {
+            width: 6px;
+        }
+        .description-fake-textarea::-webkit-scrollbar-thumb {
+            background: #7DAFB0;
+            border-radius: 10px;
+        }
+
+        .media-slider-container { position: relative; height: 350px; background: #000; }
+        .media-slider { height: 100%; display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
+        .media-slider::-webkit-scrollbar { display: none; }
+        .media-slider img, .media-slider video { width: 100%; height: 100%; object-fit: cover; flex-shrink: 0; scroll-snap-align: start; }
+
+        .slider-dots {
+            position: absolute;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+        }
+        .dot { width: 8px; height: 8px; background: rgba(255,255,255,0.5); border-radius: 50%; cursor: pointer; }
+        .dot.active { background: white; transform: scale(1.2); }
+
+        .view-date-text { color: #888; font-size: 0.9rem; }
+        .view-location-text { color: #7DAFB0; font-weight: bold; }
+
+        .view-actions {
+            margin-top: auto; 
+            display: flex;
+            gap: 12px;
+            padding-top: 20px;
+        }
+
+        .view-actions button {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+        }
+
+        .btn-delete {
+            background-color: #b94e4e !important; 
+            color: white !important;
+        }
+
+        .btn-delete:hover {
+            background-color: #ff7575 !important;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(255, 138, 138, 0.3);
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 10000;
+            left: 0;
+            top: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(4px);
+            
+            align-items: center;
+            justify-content: center;
+        }
+        .modal.active {
+                display: flex;
+                opacity: 1;
+            }
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%; 
+            border: none;
+            background-color: rgba(255, 0, 0, 0.2); 
+            color: white;
+            font-size: 25px;
+            line-height: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            padding: 0;
+            z-index: 101; 
+        }
+
+        .btn-delete {
+            background-color: #b94e4e !important; 
+            color: white !important;
+        }
+
+        .btn-delete:hover {
+            background-color: #ff7575 !important;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(255, 138, 138, 0.3);
+        }
+
+        .modal-content {
+            background-color: white;
+            max-width: 850px;
+            width: 95%;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+            border-radius: 24px;
+        }
+
+
+        .modal-body-columns {
+            display: grid;
+            flex: 1;
+            overflow-y: auto;
+            grid-template-columns: 1fr 1.2fr; 
+            gap: 30px;
+            padding: 25px;
+        }
+
+
+        .modal-footer {
+            padding: 15px 25px;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: center;
+        }
+
+        @media (max-width: 768px) {
+            .modal-body-columns {
+                grid-template-columns: 1fr;
+                gap: 15px;
+                padding: 15px;
+            }
+            
+            .modal-content {
+                width: 100%;
+                height: 100%;
+                max-height: 100vh;
+                border-radius: 0;
+            }
+        }
+
+        @keyframes modalAppear {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-header {
+            background-color: #8FBFC0;
+            padding: 20px;
+            color: white;
+            text-align: center;
+            position: relative;
+        }
+        .loader { border: 4px solid #f3f3f3; border-top: 4px solid var(--sidebar-bg); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 50px auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo-area">
+            <img src="static/logo.png" class="logo-box"><span class="brand-name">Memorya Travel</span>
+        </div>
+                
+        <nav class="header-nav">
+            <a href="/map.html" >Моя Карта</a>
+            <a href="#" class="active" >Мои путешествия</a>
+            <a href="/main.html">О проекте</a>
+        </nav>
+
+        <div class="profile-area">
+            <img id="userAvatar" src="" alt="Профиль">
+            <span><a href="/profile.html">Мой профиль</a></span>
+        </div>
+    </header>
+
+    <div class="filter-panel">
+        <div class="filter-grid">
+            <div class="filter-group">
+                <label>Название</label>
+                <input type="text" id="fSearch" class="f-input1" placeholder="Поиск..." oninput="applyFilters()">
+            </div>
+            <div class="filter-group">
+                <label>Страна</label>
+                <select id="fCountry" class="f-input" onchange="loadRegions()">
+                    <option value="">Весь мир</option>
+                </select>
+            </div>
+            <div class="filter-group" id="fRegionBox" style="display: none;">
+                <label>Регион</label>
+                <select id="fRegion" class="f-input" onchange="applyFilters()">
+                    <option value="">Все регионы</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>С даты</label>
+                <input type="date" id="fDateFrom" class="f-input" onchange="applyFilters()">
+            </div>
+            <div class="filter-group">
+                <label>По дату</label>
+                <input type="date" id="fDateTo" class="f-input" onchange="applyFilters()">
+            </div>
+        </div>
+        
+        <div class="icon-filters" id="fIcons">
+            </div>
+    </div>
+    <div id="viewModal" class="modal">
+        <div class="modal-content view-modal-container">
+            <button type="button" class="close-btn" onclick="closeViewModal()"><span>&times;</span></button>
+                        
+            <div class="media-slider-container">
+                <div class="media-slider" id="mediaSlider"></div>
+                <div class="slider-dots" id="sliderDots"></div>
+            </div>
+
+            <div class="view-bottom-layout">
+                <div class="view-meta-col">
+                <h2 id="viewTitle" style='font-size: 30px;'>Название</h2>
+                <div id="viewDate" class="view-date-text">01.01.2024</div>
+                <div id="viewLocation" class="view-location-text">Страна, Регион</div>
+                <div class="view-icons-grid" id="viewIcons"></div>
+                <div class="view-actions">
+                    <button class="btn-delete" id="btnDelete">Удалить</button>
+                </div>
+            </div>
+                <div class="view-description-col"> <div class="description-fake-textarea" id="viewDescription"> </div> </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div id="travelsGrid" class="travels-grid">
+            <div class="loader"></div>
+        </div>
+    </div>
+</body>
+<script>
+    const API_BASE_URL = `http://${window.location.hostname}:8000`;
+    let allData = [];
+    let selectedIconIds = new Set();
+    let CACHED_PROFILE = null;
+    function getCookie(name) {
+        const value = `; ${document.cookie};`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(';').shift();
+        return null;
+    }
+
+    function deleteAllCookies() {
+            const allCookies = document.cookie.split(';');
+            for (let i = 0; i < allCookies.length; i++) {
+                const cookie = allCookies[i];
+                const eqPos = cookie.indexOf('=');
+                const name = eqPos > -1 ? cookie.substring(0, eqPos) : cookie;
+                
+                document.cookie = name.trim() + '=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/';
+            }
+        }
+
+    async function Reset() {
+        const refresh = getCookie('rememberToken');
+        const response = await fetch(`${API_BASE_URL}/auth/refresh`, {
+            method: "POST",
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 'refresh_token': refresh }),
+            credentials: 'include'
+        });
+        if (response.ok) {
+            const data = await response.json();
+            deleteAllCookies();
+            document.cookie = `rememberToken=${data.refresh_token}; path=/; max-age=604800`;
+            return true;
+        }
+        deleteAllCookies();
+        window.location.href = '/login.html';
+        return false;
+    }
+    async function init() {
+        renderIconFilters();
+        await fetchCountries();
+        await fetchAllTravels();
+    }
+
+    function renderIconFilters() {
+        const container = document.getElementById('fIcons');
+        for (let i = 1; i <= 10; i++) {
+            const btn = document.createElement('div');
+            btn.className = 'icon-cube';
+            btn.innerHTML = `<img src="static/${i}.png" alt="icon">`;
+            btn.onclick = () => {
+                btn.classList.toggle('active');
+                if (selectedIconIds.has(i)) selectedIconIds.delete(i);
+                else selectedIconIds.add(i);
+                applyFilters();
+            };
+            container.appendChild(btn);
+        }
+    }
+
+    async function fetchCountries() {
+        const res = await fetch(`${API_BASE_URL}/geography/countries`);
+        if (res.ok){
+            const data = await res.json();
+            const s = document.getElementById('fCountry');
+            data.forEach(c => s.insertAdjacentHTML('beforeend', `<option value="${c.id}">${c.name_ru}</option>`));
+        } else if (res.status === 401) { 
+            await Reset;
+            await fetchCountries();
+        }
+        
+    }
+
+    async function loadRegions() {
+        const cid = document.getElementById('fCountry').value;
+        const box = document.getElementById('fRegionBox');
+        const s = document.getElementById('fRegion');
+        
+        if (!cid) {
+            box.style.display = 'none';
+        } else {
+            const res = await fetch(`${API_BASE_URL}/geography/regions/${cid}`);
+            const data = await res.json();
+            s.innerHTML = '<option value="">Все регионы</option>';
+            data.forEach(r => s.insertAdjacentHTML('beforeend', `<option value="${r.id}">${r.name_ru}</option>`));
+            box.style.display = 'flex';
+        }
+        applyFilters();
+    }
+
+    async function fetchAllTravels() {
+        try {
+            const res = await fetch(`${API_BASE_URL}/travels/my`, { credentials: 'include' });
+            if (res.ok){
+                allData = await res.json();
+                const img = document.getElementById('userAvatar');
+                img.src = `${API_BASE_URL}/users/avatar?t=${Date.now()}`;
+                renderGrid(allData);
+            } else if (res.status === 401) {
+                await Reset();
+                await fetchAllTravels();
+            }
+            
+        } catch (e) {
+            document.getElementById('travelsGrid').innerHTML = 'Ошибка загрузки';
+        }
+    }
+
+    function applyFilters() {
+        const search = document.getElementById('fSearch').value.toLowerCase();
+        const cid = document.getElementById('fCountry').value;
+        let rid;
+        if (cid){
+            const rid = document.getElementById('fRegion').value;
+        };
+        const dFrom = document.getElementById('fDateFrom').value;
+        const dTo = document.getElementById('fDateTo').value;
+        const filtered = allData.filter(t => {
+            const mSearch = t.title.toLowerCase().includes(search);
+            const mCountry = !cid || t.country_id == cid;
+            const mRegion = !rid || t.region_id == rid;
+            const mDateF = !dFrom || t.travel_date >= dFrom;
+            const mDateT = !dTo || t.travel_date <= dTo;
+            const mIcons = selectedIconIds.size === 0 || 
+            Array.from(selectedIconIds).every(id => t.icon_ids.includes(id));
+
+            return mSearch && mCountry && mRegion && mDateF && mDateT && mIcons;
+        });
+
+        renderGrid(filtered);
+    }
+
+    async function openViewModal(travelId) {
+        try {
+            
+            const response = await fetch(`${API_BASE_URL}/travels/by_id/${travelId}`, { credentials: 'include' });
+            if (response.status === 401){
+                Reset();
+                openViewModal(travelId);
+            };
+            const travel = await response.json();
+            
+            document.getElementById('viewTitle').textContent = travel.title;
+            document.getElementById('viewDate').textContent = new Date(travel.travel_date).toLocaleDateString('ru-RU');
+            document.getElementById('viewLocation').textContent = `${travel.country_name}, ${travel.region_name}`;
+            document.getElementById('viewDescription').textContent = travel.description;
+
+            if (travel.icon_ids){
+                const iconsBox = document.getElementById('viewIcons');
+                iconsBox.innerHTML = travel.icon_ids.map(id => 
+                    `<img src="static/${id}.png" class="travel-card-icon" style="width:50px; height:50px;">`
+                ).join('');
+            }
+            const slider = document.getElementById('mediaSlider');
+            const dotsContainer = document.getElementById('sliderDots');
+            slider.innerHTML = '';
+            dotsContainer.innerHTML = '';
+            if (travel.media && travel.media.length >= 1) {
+                travel.media.forEach((item, index) => {
+                    const mediaHtml =  `<img src="${API_BASE_URL}/travels/image/${travelId}/${item}" alt="">`;
+                    slider.insertAdjacentHTML('beforeend', mediaHtml);
+
+                    const dot = document.createElement('div');
+                    dot.className = `dot ${index === 0 ? 'active' : ''}`;
+                    dot.onclick = () => {
+                        slider.scrollTo({ left: slider.offsetWidth * index, behavior: 'smooth' });
+                    };
+                    dotsContainer.appendChild(dot);
+                });
+                slider.onscroll = () => {
+                    const scrollIndex = Math.round(slider.scrollLeft / slider.offsetWidth);
+                    const dots = dotsContainer.querySelectorAll('.dot');
+                    dots.forEach((d, i) => d.classList.toggle('active', i === scrollIndex));
+                };
+            }
+            const footerActions = document.querySelector('.view-actions');
+            footerActions.innerHTML = `
+                <button class="btn-delete" onclick="handleDelete('${travel.id}')">Удалить</button>
+            `;
+
+            document.getElementById('viewModal').style.display = 'flex';
+        } catch (e) {
+            console.error("Ошибка при открытии карточки:", e);
+        }
+    }
+
+    function closeViewModal() {
+        document.getElementById('viewModal').style.display = 'none';
+    }
+    async function handleDelete(travelId) {
+        const confirmed = confirm("Вы уверены, что хотите удалить это путешествие? Это действие нельзя отменить.")
+        if (!confirmed) return;
+        try{
+            const response = await fetch(`${API_BASE_URL}/travels/by_id/${travelId}`, {
+                method: 'DELETE',
+                credentials: 'include'
+            });
+            if (response.ok){
+                alert('Путешествие удалено')
+                closeViewModal();
+                init();
+            } else if (response.status === 401){
+                await Reset();
+                const response = await fetch(`${API_BASE_URL}/travels/by_id/${travelId}`, {
+                    method: 'DELETE',
+                    credentials: 'include'
+                });
+                if (response.ok){
+                    alert('ПУтешествие удалено')
+                    closeViewModal();
+
+                    init();
+                } else if (response.status === 401){
+                    window.location.href = '/login.html'
+                }
+            }
+        } catch (e) {
+            
+            alert('Не удалось удалить')
+        }
+    }
+    function renderGrid(data) {
+        const grid = document.getElementById('travelsGrid');
+        grid.innerHTML = '';
+
+        if (data.length === 0) {
+            grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: #888; padding: 50px;">Ничего не нашли... 🗺️</div>';
+            return;
+        }
+
+        data.forEach(t => {
+            const imgUrl = `${API_BASE_URL}/travels/main_image/${t.id}`
+
+            const card = document.createElement('div');
+            card.className = 't-card';
+            card.innerHTML = `
+                <img src="${imgUrl}" class="t-image" onclick="openViewModal('${t.id}')">
+                <div class="t-info">
+                    <div class="t-date">${new Date(t.travel_date).toLocaleDateString('ru-RU')}</div>
+                    <div class="t-title">${t.title}</div>
+                    <div class="t-loc">📍 ${t.country_name}, ${t.region_name}</div>
+                    <div class="t-icons-row">
+                        ${t.icon_ids.map(id => `<img src="static/${id}.png" class="t-mini-icon" title="Tag ${id}">`).join('')}
+                    </div>
+                </div>
+            `;
+            grid.appendChild(card);
+        });
+    }
+
+    init();
+</script>
+
+</body>
+</html>

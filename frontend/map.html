@@ -1,0 +1,163 @@
+<!DOCTYPE HTML>
+<html lang="ru">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Memorya Travel - Карта</title>
+        
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+
+        <header>
+            <div class="logo-area">
+                <img src="static/logo.png" class="logo-box"><span class="brand-name">Memorya Travel</span>
+            </div>
+            
+            <nav class="header-nav">
+                <a href="#" class="active">Моя Карта</a>
+                <a href="/travels.html">Мои путешествия</a>
+                <a href="/main.html">О проекте</a>
+            </nav>
+
+            <div class="profile-area">
+                <img id="userAvatar" src="" alt="Профиль">
+                <span><a href="/profile.html">Мой профиль</a></span>
+            </div>
+        </header>
+
+        <main class="main-container">
+            <div id="map-container"></div>
+
+            <div id="addModal" class="modal">
+                <div class="modal-content">
+                    <button type="button" class="close-btn" onclick="closeAddModal()"><span>&times;</span></button>
+                    
+                    <div class="modal-header">
+                        <h2>Новое путешествие</h2>
+                    </div>
+                    
+                    <form id="addTravelForm">
+                        <input type="hidden" id="editTravelId" value="">
+                        <div class="modal-body-columns">
+                            <div class="form-col">
+                                <div class="error-message hidden">Ошибка</div>
+                                <div class="form-group">
+                                    <label>Название</label>
+                                    <input type="text" id="travelTitle" required placeholder="Например: Поездка в Париж всей семьей">
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Дата</label>
+                                        <input type="date" id="travelDate" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Страна</label>
+                                        <select id="countrySelectModal" onchange="loadRegions(this.value)" required>
+                                            <option value="">Выберите...</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Регион</label>
+                                    <select id="regionSelectModal">
+                                        <option value="">Сначала выберите страну</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Атмосфера (0-5)</label>
+                                    <div class="icon-grid" id="iconGrid">
+                                        <div class="icon-item" data-id="1"><img src="static/1.png" class="icon-img"></div>
+                                        <div class="icon-item" data-id="2"><img src="static/2.png" class="icon-img"></div>
+                                        <div class="icon-item" data-id="3"><img src="static/3.png" class="icon-img"></div>
+                                        <div class="icon-item" data-id="4"><img src="static/4.png" class="icon-img"></div>
+                                        <div class="icon-item" data-id="5"><img src="static/5.png" class="icon-img"></div>
+                                        <div class="icon-item" data-id="6"><img src="static/6.png" class="icon-img"></div>
+                                        <div class="icon-item" data-id="7"><img src="static/7.png" class="icon-img"></div>
+                                        <div class="icon-item" data-id="8"><img src="static/8.png" class="icon-img"></div>
+                                        <div class="icon-item" data-id="9"><img src="static/9.png" class="icon-img"></div>
+                                        <div class="icon-item" data-id="10"><img src="static/10.png" class="icon-img"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-col">
+                                <div class="form-group">
+                                    <label>Описание (до 5000 символов)</label>
+                                    <textarea id="travelDescription" placeholder="Ваши впечатления..."></textarea>
+                                    <div id="charCounter" class="char-counter">0/5000</div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Фото (до 5)</label>
+                                    <div class="media-upload-container">
+                                        <div id="mediaPreviewGrid" class="media-preview-grid"></div>
+                                        <label for="mediaInput" class="media-add-btn" id="mediaAddBtn">
+                                            <span>+ Добавить медиа</span>
+                                            <input type="file" id="mediaInput" multiple accept="image/jpeg, image/webp, image/png" style="display: none;">
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn-submit-main">Сохранить путешествие</button>
+                    </form>
+                </div>
+            </div>
+            <div id="viewModal" class="modal">
+                <div class="modal-content view-modal-container">
+                    <button type="button" class="close-btn" onclick="closeViewModal()"><span>&times;</span></button>
+                    
+                    <div class="media-slider-container">
+                        <div class="media-slider" id="mediaSlider"></div>
+                        <div class="slider-dots" id="sliderDots"></div>
+                    </div>
+
+                    <div class="view-bottom-layout">
+                        <div class="view-meta-col">
+                            <h2 id="viewTitle" style='font-size: 30px;'>Название</h2>
+                            <div id="viewDate" class="view-date-text">01.01.2024</div>
+                            <div id="viewLocation" class="view-location-text">Страна, Регион</div>
+                            
+                            <div class="view-icons-grid" id="viewIcons"></div>
+                            
+                            <div class="view-actions">
+                                <button class="btn-delete" id="btnDelete">Удалить</button>
+                            </div>
+                        </div>
+
+                        <div class="view-description-col"> <div class="description-fake-textarea" id="viewDescription"> </div> </div>
+                    </div>
+                </div>
+            </div>
+            <aside class="sidebar">
+                <div class="sidebar-header">
+                    <h2 id="sidebarTitle">Добавить путешествие</h2>
+                </div>
+                
+                <div class="sidebar-content" id="sidebarContent">
+                    <div class="info-message">
+                        <p>Нажимайте на страны, чтобы увидеть свои путешествия.</p>
+                        <p>Если страна выбрана, кнопка «плюс» добавит путешествие именно в неё.</p>
+                    </div>
+                    
+                    <div class="country-hint" id="selectedCountryDisplay">
+                        Выберите страну на карте
+                    </div>
+                    
+                    <button class="btn-select" onclick="resetSelection()">Сбросить выбор</button>
+                </div>
+
+                <button class="btn-add" onclick="openAddModal()">+</button>
+            </aside>
+        </main>
+
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+        <script src="script.js"></script>
+    </body>
+</html>

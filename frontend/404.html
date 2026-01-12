@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Потерянный маршрут</title>
+    <style>
+        :root {
+            --bg-color: #BCE6E6;        
+            --text-main: #7DAFB0;       
+            --white: #FFFFFF;
+            --btn-create: #8ABEC0;      
+            --error-color: #E74C3C;     
+            --accent-yellow: #EEDC9A;   
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+
+        body {
+            background-color: var(--bg-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .error-container {
+            width: 100%;
+            max-width: 600px;
+            background-color: var(--white);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            padding: 50px 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            position: relative;
+        }
+
+        .error-container::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 30px;
+            background-color: var(--accent-yellow);
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            color: var(--error-color);
+            font-size: 5rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+            position: relative;
+            z-index: 2;
+        }
+
+        h2 {
+            color: var(--text-main);
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+
+        .error-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+            line-height: 1;
+            text-shadow: 3px 3px 0 rgba(255,255,255,0.5), -2px -2px 0 rgba(0,0,0,0.1);
+        }
+
+        p {
+            color: #666;
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+            line-height: 1.5;
+            max-width: 85%;
+        }
+
+        .btn-home {
+            background-color: var(--btn-create);
+            color: var(--white);
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s;
+        }
+
+        .btn-home:hover {
+            background-color: #6C9DA0;
+        }
+    </style>
+</head>
+<body>
+    <div class="error-container">
+        <div class="error-icon">🧭</div> 
+        <h1>404</h1>
+        <h2>Потерянный маршрут!</h2>
+        <p>Ой, кажется, эта страница сошла с карты Memorya Travel. Возможно, вы свернули не туда? Проверьте адрес в строке браузера.</p>
+        <a href="/main.html" class="btn-home">Вернуться на главную</a>
+    </div>
+</body>
+</html>
