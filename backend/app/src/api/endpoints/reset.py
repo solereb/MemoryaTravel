@@ -33,7 +33,7 @@ async def send_reset_email(content: EmailSchema, session: AsyncSession = Depends
     if auth is not None:
         data = {"reset_token": str(auth.reset_token), "purpose": "reset"}
         token = await create_access_token(data)
-        url = f'http://127.0.0.1/reset_password.html?token={token}'
+        url = f'http://192.168.1.103:5500/reset_password.html?token={token}'
         print(url)
         asyncio.create_task(send_email_reset(email, url))
     return Response(status_code=status.HTTP_204_NO_CONTENT)

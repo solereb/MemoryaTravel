@@ -18,7 +18,8 @@ STORAGE_PATH = os.path.abspath("storage")
 
 @router.get(
     "/users",
-    response_model=List[UserAdminView]
+    response_model=List[UserAdminView],
+    summary='Get all users for admin'
 )
 async def create_ticket(cur_user = Depends(get_is_admin), db = Depends(get_db)):
     if cur_user == False:
@@ -28,7 +29,8 @@ async def create_ticket(cur_user = Depends(get_is_admin), db = Depends(get_db)):
 
 @router.get(
     "/tickets",
-    response_model=List[TicketAdminView]
+    response_model=List[TicketAdminView],
+    summary='Get all ticket for admin'
 )
 async def get_tickets(cur_user = Depends(get_is_admin), db = Depends(get_db)):
     if cur_user == False:
@@ -40,7 +42,8 @@ async def get_tickets(cur_user = Depends(get_is_admin), db = Depends(get_db)):
     return tickets
 
 @router.get(
-    "/support/{ticket_id}/{user_id}/screenshot"
+    "/support/{ticket_id}/{user_id}/screenshot",
+    summary='Get ticket screenshot for admin'
 )
 async def get_screenshot(ticket_id: uuid.UUID, user_id: uuid.UUID, cur_user = Depends(get_is_admin), db = Depends(get_db)):
     if cur_user == False:
@@ -59,7 +62,8 @@ async def get_screenshot(ticket_id: uuid.UUID, user_id: uuid.UUID, cur_user = De
     )
 
 @router.get(
-    "/stat"
+    "/stat",
+    summary='Get statistic for admin'
 )
 async def get_stat(cur_user = Depends(get_is_admin), db = Depends(get_db)):
     if cur_user == False:
@@ -74,7 +78,8 @@ async def get_stat(cur_user = Depends(get_is_admin), db = Depends(get_db)):
     )
 
 @router.post(
-    "/users/{user_id}/verify"
+    "/users/{user_id}/verify",
+    summary='Verify user email with admin account'
 )
 async def verify_user(user_id: uuid.UUID, cur_user = Depends(get_is_admin), db = Depends(get_db)):
     if cur_user == False:
@@ -84,7 +89,8 @@ async def verify_user(user_id: uuid.UUID, cur_user = Depends(get_is_admin), db =
     return {'OK'}
 
 @router.delete(
-    "/users/{user_id}"
+    "/users/{user_id}",
+    summary='Delete user by admin'
 )
 async def verify_user(user_id: uuid.UUID, cur_user = Depends(get_is_admin), db = Depends(get_db)):
     if cur_user == False:
@@ -93,7 +99,8 @@ async def verify_user(user_id: uuid.UUID, cur_user = Depends(get_is_admin), db =
     return {'OK'}
 
 @router.delete(
-    "/ticket/{ticket_id}"
+    "/ticket/{ticket_id}",
+    summary='Delete ticket by id using admin'
 )
 async def delete_ticket(ticket_id: uuid.UUID, cur_user = Depends(get_is_admin), db = Depends(get_db)):
     if cur_user == False:

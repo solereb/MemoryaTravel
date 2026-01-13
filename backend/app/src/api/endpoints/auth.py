@@ -53,8 +53,8 @@ async def register_user(content: RegistrationSchema, db: AsyncSession = Depends(
             email=content.email, 
             password_hash=hashed_password
         )
-        asyncio.create_task(send_email_verification(content.email, f'http://127.0.0.12/verify.html?token={auth_cont.verification_token}'))
-        print(f'http://127.0.0.1:5500/verify.html?token={auth_cont.verification_token}')
+        asyncio.create_task(send_email_verification(content.email, f'http://192.168.1.103:5500/verify.html?token={auth_cont.verification_token}'))
+        print(f'http://192.168.1.103:5500/verify.html?token={auth_cont.verification_token}')
     except EmailAlreadyExistsError:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,

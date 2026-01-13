@@ -15,7 +15,10 @@ import os
 router = APIRouter(prefix='/travels', tags=['Travel interactions'])
 STORAGE_PATH = os.path.abspath("storage")
 
-@router.post("/{travel_id}/upload-media")
+@router.post(
+    "/{travel_id}/upload-media",
+    summary='Upload media for travels'
+)
 async def upload_travel_media(
     travel_id: uuid.UUID,
     files: List[UploadFile] = File(...),
@@ -120,6 +123,7 @@ async def get_by_id(travel_id = uuid.UUID, cur_user = Depends(get_current_user),
 
 @router.delete(
     '/by_id/{travel_id}',
+    summary='Delete travel'
 )
 async def delete_travel(travel_id: uuid.UUID, cur_user = Depends(get_current_user), db = Depends(get_db)):
     travel = await TravelService.get_by_id(session=db, travel_id=travel_id)
@@ -142,7 +146,6 @@ async def get_current_user_avatar(travel_id: uuid.UUID, current_user = Depends(g
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail='Dont try get photos for not your travel')
     user_id_str = str(travel_id).zfill(6)
     file_path = os.path.join(STORAGE_PATH, 'travels', user_id_str[:2], user_id_str[2:4], f'travel_{travel_id}', f"main.webp")
-    print(file_path)
     if not os.path.exists(file_path):
         file_path = f'{STORAGE_PATH}/defaults/default_travel.png'
     return FileResponse(
@@ -182,7 +185,8 @@ async def get_current_user_avatar(travel_id: uuid.UUID, name: str, current_user 
     
 @router.get(
     '/by_country/{country_id}',
-    response_model=List[TravelResponse]
+    response_model=List[TravelResponse],
+    summary='Get travels for user by country'
 )
 async def get_by_country(country_id: int, cur_user = Depends(get_current_user), db = Depends(get_db)):
     travels = await TravelService.get_by_country(session=db, auth_id=cur_user.id, country_id=country_id)
@@ -190,7 +194,8 @@ async def get_by_country(country_id: int, cur_user = Depends(get_current_user), 
 
 @router.get(
     '/by_region/{region_id}',
-    response_model=List[TravelResponse]
+    response_model=List[TravelResponse],
+    summary='Get travels for user by regions'
 )
 async def get_by_country(region_id: int, cur_user = Depends(get_current_user), db = Depends(get_db)):
     travels = await TravelService.get_by_region(session=db, auth_id=cur_user.id, region_id=region_id)
@@ -198,7 +203,8 @@ async def get_by_country(region_id: int, cur_user = Depends(get_current_user), d
 
 @router.get(
     '/my',
-    response_model=List[TravelResponse]
+    response_model=List[TravelResponse],
+    summary='Get all user travels'
 )
 async def get_travels(cur_user = Depends(get_current_user), db = Depends(get_db)):
     travels = await TravelService.get_by_id(session=db, auth_id=cur_user.id)

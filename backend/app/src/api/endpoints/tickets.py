@@ -13,14 +13,16 @@ STORAGE_PATH = os.path.abspath("storage")
 
 @router.post(
     "/tickets",
-    response_model=TicketResponse
+    response_model=TicketResponse,
+    summary='Create ticket data'
 )
 async def create_ticket(data: TicketCreate, cur_user = Depends(get_current_user), db = Depends(get_db)) -> TicketResponse:
     ticket = await TicketService.create(session=db, auth_id=cur_user.id, category=data.category, priority=data.priority, message=data.message)
     return ticket
 
 @router.post(
-    "/tickets/{ticket_id}/screenshot"
+    "/tickets/{ticket_id}/screenshot",
+    summary='Save screenshot for ticket'
 )
 async def upload_image(ticket_id: uuid.UUID, file: UploadFile = File(...), cur_user = Depends(get_current_user), db = Depends(get_db)):
     allowed_types = ["image/jpeg", "image/png", "image/webp"]

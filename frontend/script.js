@@ -369,6 +369,7 @@ const mediaCounter = document.getElementById('mediaCounter');
 const mediaAddBtn = document.getElementById('mediaAddBtn');
 
 mediaInput.addEventListener('change', (e) => {
+    console.log(selectedFiles)
     const files = Array.from(e.target.files);
     if (selectedFiles.length + files.length === 5) {
         document.getElementById('mediaAddBtn').style.display = 'none';
@@ -704,6 +705,7 @@ function openAddModal() {
     const countrySelect = document.getElementById('countrySelectModal');
     modal.style.display = 'flex';
     selectedIcons.clear();
+    selectedFiles = [];
     document.querySelectorAll('.icon-item').forEach(i => i.classList.remove('active'));
     if (countrySelect.options.length <= 1) {
         Object.values(countryMapping).forEach(c => {
@@ -766,8 +768,16 @@ document.getElementById('addTravelForm').addEventListener('submit', async (e) =>
                     credentials: 'include'
                 });
             }
+            
             cleanErrors();
             loadTravelsForCountry(parseInt(document.getElementById('countrySelectModal').value), document.getElementById('countrySelectModal').textContent);
+            document.getElementById('travelTitle').value = '';
+            document.getElementById('travelDate').value = '';
+            document.getElementById('countrySelectModal').value = '';
+            document.getElementById('regionSelectModal').value = '';
+            document.getElementById('travelDescription').value = '';
+            selectedFiles = [];
+            mediaPreviewGrid.replaceChildren();
             closeAddModal();
         } else if (response.status === 401){
             await Reset();
